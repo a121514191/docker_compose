@@ -18,16 +18,17 @@ Compose 適合用來開發、測試、與建立 staging 環境，如同 CI workf
 
 3.最後，執行 docker-compose up，Compose 將會開始與執行你所有的 app。
 
->這次實作，是引用別人做好的 docker-compose 所以第1步驟直接跳過 
+這次實作，是引用別人做好的 docker-compose 所以第1步驟直接跳過
 
 ###  1.安裝 docker-compose
 
 有很多安裝方法，我使用的是
+```
+yum install python-pip python-dev
 
->yum install python-pip python-dev
+pip install docker-compose
 
->pip install docker-compose
-
+```
 其他安裝方法在下面連結
 
 http://www.manongjc.com/article/2941.html
@@ -200,15 +201,16 @@ services:
 ### 3.執行 docker-compose up
 
 安裝完 docker-compose 先檢查一下安裝是否成功
+```
+docker-compose -v 
 
-> docker-compose -v 
-
+```
 安裝成功後去執行
+```
+docker-compose up 
 
-> docker-compose up 
-
-> docker-compose up -d 後台執行
-
+docker-compose up -d 後台執行
+```
 執行後可以去查看 images 以及 container 增加了什麼 
 
 
