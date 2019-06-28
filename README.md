@@ -41,7 +41,8 @@ http://www.manongjc.com/article/2941.html
 內容部分是引用他人已經寫好的
 
 <details>  
-  
+
+```
 version: '2'
 services:
   redis:
@@ -192,7 +193,8 @@ services:
     - OAUTH_AZURE_API_KEY=
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=
-  
+```
+
 </details> 
 
 ### 3.執行 docker-compose up
