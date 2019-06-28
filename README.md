@@ -1,4 +1,4 @@
-# docker_compose 建立 gitlab 
+# docker_compose (編排) 建立 gitlab 
 
 Compose 是一個工具
 
@@ -18,76 +18,211 @@ Compose 適合用來開發、測試、與建立 staging 環境，如同 CI workf
 
 3.最後，執行 docker-compose up，Compose 將會開始與執行你所有的 app。
 
-### 
+>這次實作，是引用別人做好的 docker-compose 所以第1步驟直接跳過 
 
->docker create -v /var/www/html --name dataContainer busybox
+###  1.安裝 docker-compose
 
->docker create -v /config --name volume_test busybox
+有很多安裝方法，我使用的是
 
-![](https://github.com/a121514191/docker_volume/blob/master/create_volume.PNG)
+>yum install python-pip python-dev
 
-### 查看
+>pip install docker-compose
 
->docker ps -a 
+其他安裝方法在下面連結
 
-![](https://github.com/a121514191/docker_volume/blob/master/ps_create_volume.PNG)
+http://www.manongjc.com/article/2941.html
 
-### 將你要的文件cp(複製)到剛剛建立的容器裡面
+安裝在 /usr/bin/ 底下
 
-!這邊卡了很久，原因只出在於範例多了空白
+### 2.建立 docker-compose.yml 檔案 (在任一目錄下，執行時在該目錄下)
 
-docker cp path/file volume_test:/config/ (O)
->docker cp test.txt volume_test:/config/ 
+在隨一目錄下建立 docker-compose.yml 檔案
 
-![](https://github.com/a121514191/docker_volume/blob/master/O.PNG)
+內容部分是引用他人已經寫好的
 
-docker cp path/file volume_test:/ config / (X)
->docker cp test.txt volume_test:/ config / 
+<details>  
+  
+version: '2'
+services:
+  redis:
+    restart: always
+    image: sameersbn/redis:4.0.9-1
+    command:
+    - --loglevel warning
+    volumes:
+    - /srv/docker/gitlab/redis:/var/lib/redis:Z
 
-![](https://github.com/a121514191/docker_volume/blob/master/X.PNG)
+  postgresql:
+    restart: always
+    image: sameersbn/postgresql:10
+    volumes:
+    - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
+    environment:
+    - DB_USER=gitlab
+    - DB_PASS=password
+    - DB_NAME=gitlabhq_production
+    - DB_EXTENSION=pg_trgm
+
+  gitlab:
+    restart: always
+    image: sameersbn/gitlab:11.11.3
+    depends_on:
+    - redis
+    - postgresql
+    ports:
+    - "10080:80"
+    - "10022:22"
+    volumes:
+    - /srv/docker/gitlab/gitlab:/home/git/data:Z
+    environment:
+    - DEBUG=false
+
+    - DB_ADAPTER=postgresql
+    - DB_HOST=postgresql
+    - DB_PORT=5432
+    - DB_USER=gitlab
+    - DB_PASS=password
+    - DB_NAME=gitlabhq_production
+
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+
+    - TZ=Asia/Kolkata
+    - GITLAB_TIMEZONE=Kolkata
+
+    - GITLAB_HTTPS=false
+    - SSL_SELF_SIGNED=false
+
+    - GITLAB_HOST=localhost
+    - GITLAB_PORT=10080
+    - GITLAB_SSH_PORT=10022
+    - GITLAB_RELATIVE_URL_ROOT=
+    - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+    - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
+    - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
+
+    - GITLAB_ROOT_PASSWORD=
+    - GITLAB_ROOT_EMAIL=
+
+    - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+    - GITLAB_NOTIFY_PUSHER=false
+
+    - GITLAB_EMAIL=notifications@example.com
+    - GITLAB_EMAIL_REPLY_TO=noreply@example.com
+    - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
+
+    - GITLAB_BACKUP_SCHEDULE=daily
+    - GITLAB_BACKUP_TIME=01:00
+
+    - SMTP_ENABLED=false
+    - SMTP_DOMAIN=www.example.com
+    - SMTP_HOST=smtp.gmail.com
+    - SMTP_PORT=587
+    - SMTP_USER=mailer@example.com
+    - SMTP_PASS=password
+    - SMTP_STARTTLS=true
+    - SMTP_AUTHENTICATION=login
+
+    - IMAP_ENABLED=false
+    - IMAP_HOST=imap.gmail.com
+    - IMAP_PORT=993
+    - IMAP_USER=mailer@example.com
+    - IMAP_PASS=password
+    - IMAP_SSL=true
+    - IMAP_STARTTLS=false
+
+    - OAUTH_ENABLED=false
+    - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=
+    - OAUTH_ALLOW_SSO=
+    - OAUTH_BLOCK_AUTO_CREATED_USERS=true
+    - OAUTH_AUTO_LINK_LDAP_USER=false
+    - OAUTH_AUTO_LINK_SAML_USER=false
+    - OAUTH_EXTERNAL_PROVIDERS=
+
+    - OAUTH_CAS3_LABEL=cas3
+    - OAUTH_CAS3_SERVER=
+    - OAUTH_CAS3_DISABLE_SSL_VERIFICATION=false
+    - OAUTH_CAS3_LOGIN_URL=/cas/login
+    - OAUTH_CAS3_VALIDATE_URL=/cas/p3/serviceValidate
+    - OAUTH_CAS3_LOGOUT_URL=/cas/logout
+
+    - OAUTH_GOOGLE_API_KEY=
+    - OAUTH_GOOGLE_APP_SECRET=
+    - OAUTH_GOOGLE_RESTRICT_DOMAIN=
+
+    - OAUTH_FACEBOOK_API_KEY=
+    - OAUTH_FACEBOOK_APP_SECRET=
+
+    - OAUTH_TWITTER_API_KEY=
+    - OAUTH_TWITTER_APP_SECRET=
+
+    - OAUTH_GITHUB_API_KEY=
+    - OAUTH_GITHUB_APP_SECRET=
+    - OAUTH_GITHUB_URL=
+    - OAUTH_GITHUB_VERIFY_SSL=
+
+    - OAUTH_GITLAB_API_KEY=
+    - OAUTH_GITLAB_APP_SECRET=
+
+    - OAUTH_BITBUCKET_API_KEY=
+    - OAUTH_BITBUCKET_APP_SECRET=
+
+    - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=
+    - OAUTH_SAML_IDP_CERT_FINGERPRINT=
+    - OAUTH_SAML_IDP_SSO_TARGET_URL=
+    - OAUTH_SAML_ISSUER=
+    - OAUTH_SAML_LABEL="Our SAML Provider"
+    - OAUTH_SAML_NAME_IDENTIFIER_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+    - OAUTH_SAML_GROUPS_ATTRIBUTE=
+    - OAUTH_SAML_EXTERNAL_GROUPS=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
+
+    - OAUTH_CROWD_SERVER_URL=
+    - OAUTH_CROWD_APP_NAME=
+    - OAUTH_CROWD_APP_PASSWORD=
+
+    - OAUTH_AUTH0_CLIENT_ID=
+    - OAUTH_AUTH0_CLIENT_SECRET=
+    - OAUTH_AUTH0_DOMAIN=
+
+    - OAUTH_AZURE_API_KEY=
+    - OAUTH_AZURE_API_SECRET=
+    - OAUTH_AZURE_TENANT_ID=
+  
+</details> 
+
+### 3.執行 docker-compose up
+
+安裝完 docker-compose 先檢查一下安裝是否成功
+
+> docker-compose -v 
+
+安裝成功後去執行
+
+> docker-compose up 
+
+> docker-compose up -d 後台執行
+
+執行後可以去查看 images 以及 container 增加了什麼 
 
 
 
-### 之後將我們要的檔案附加進去容器
 
-可以看到原本放在我們容器的config在這個容器也有了
-再往裡面找能找到剛剛所加入的test.txt
+### 結束後去查看頁面gitlab是否安裝成功
 
->docker run -it --volumes-from volume_test ubuntu 
->ls
->cd config
->ls
 
-![](https://github.com/a121514191/docker_volume/blob/master/volume-from.PNG)
 
-### 最後是導入和導出容器數據
+(目前為初版，後續分析他人的docker-compose)
 
->docker export  volume_test> dataContainer.tar
+參考資料
 
->docker import  volume_test.tar
+https://ithelp.ithome.com.tw/articles/10194183
 
-!!!不知為何導出無數據
+http://www.manongjc.com/article/2941.html
 
-# 實做
-
-### 準備一個空的Data Volume Container
-
->docker create -v /var/www/html --name Practice busybox
-
-### 複製本機資料夾到container裡
-
->docker cp test01 Practice:/var/www/html
-
->docker cp test02 Practice:/var/www/html
-
->docker cp test03 Practice:/var/www/html
-
-### 啟動container 
-
->docker run -p 80:80 --volumes-from Practice -d --privileged=true test01 /usr/sbin/init
-
-### 進入查看
-
->docker exec -it name /bin/bash
-
+http://www.hangge.com/blog/cache/detail_2339.html
 
