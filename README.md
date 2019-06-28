@@ -27,7 +27,6 @@ Compose 適合用來開發、測試、與建立 staging 環境，如同 CI workf
 yum install python-pip python-dev
 
 pip install docker-compose
-
 ```
 其他安裝方法在下面連結
 
@@ -203,7 +202,6 @@ services:
 安裝完 docker-compose 先檢查一下安裝是否成功
 ```
 docker-compose -v 
-
 ```
 安裝成功後去執行
 ```
@@ -213,12 +211,13 @@ docker-compose up -d 後台執行
 ```
 執行後可以去查看 images 以及 container 增加了什麼 
 
+![](https://github.com/a121514191/docker_compose/blob/master/images.PNG)
 
-
+![](https://github.com/a121514191/docker_compose/blob/master/ps.PNG)
 
 ### 結束後去查看頁面gitlab是否安裝成功
 
-
+![](https://github.com/a121514191/docker_compose/blob/master/gitlab.PNG)
 
 (目前為初版，後續分析他人的docker-compose)
 
