@@ -18,7 +18,7 @@ Compose 適合用來開發、測試、與建立 staging 環境，如同 CI workf
 
 3.最後，執行 docker-compose up，Compose 將會開始與執行你所有的 app。
 
-這次實作，是引用別人做好的 docker-compose 所以第1步驟直接跳過
+這次實作，是引用別人做好的 docker-compose 
 
 ###  1.安裝 docker-compose
 
