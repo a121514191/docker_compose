@@ -215,16 +215,10 @@ docker-compose up -d 後台執行
 
 ![](https://github.com/a121514191/docker_compose/blob/master/ps.PNG)
 
-### 補充 docker-compose.yml 命名
 
-當docker-compose.yml 命名為不同名稱
+### 結束後去查看頁面gitlab是否安裝成功
 
-想啟用時的指令
-```
-docker-compose -f 檔名.yml up 
-
-docker-compose -f 檔名.yml up -d 後台執行
-```
+![](https://github.com/a121514191/docker_compose/blob/master/gitlab.PNG)
 
 ### 補充 docker-compose.yml 命名
 
@@ -236,14 +230,15 @@ docker-compose -f 檔名.yml up
 
 docker-compose -f 檔名.yml up -d 後台執行
 ```
-### 補充 docker-compose.yml 修改
+
+### 補充 docker-compose.yml 修改 都改為原生的 原因是有些版本不同 指令無法使用
 ```
 version: '3'
 
 services:
   redis:
-    restart: always
-    image: redis        
+    restart: always 
+    image: redis    //改成原生的image   
     command:
     - --loglevel warning
     volumes:
@@ -251,7 +246,7 @@ services:
 
   postgresql:
     restart: always
-    image: postgres
+    image: postgres //改成原生的image 
     volumes:
     - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
     environment:
@@ -262,11 +257,11 @@ services:
 
   gitlab:
     restart: always
-    image: gitlab/gitlab-ce:11.10.4-ce.0
+    image: gitlab/gitlab-ce:11.10.4-ce.0   
     depends_on:
-    - redis
+    - redis         //依賴上面所建立的
     - postgresql
-    ports:
+    ports: 
     - "10080:80"
     - "10022:22"
     volumes:
@@ -397,11 +392,6 @@ services:
     - traefik.default.protocol=http
 
 ```
-### 結束後去查看頁面gitlab是否安裝成功
-
-![](https://github.com/a121514191/docker_compose/blob/master/gitlab.PNG)
-
-
 
 參考資料
 
