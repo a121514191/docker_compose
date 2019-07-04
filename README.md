@@ -47,17 +47,17 @@ version: '3'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:4.0.9-1
+    image: sameersbn/redis:4.0.9-1  // 作者/作品(images)/版本
     command:
     - --loglevel warning
     volumes:
-    - /srv/docker/gitlab/redis:/var/lib/redis:Z
+    - /srv/docker/gitlab/redis:/var/lib/redis:Z  //機台實體路徑配對container路徑
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:10
+    image: sameersbn/postgresql:10  // 作者/作品(images)/版本
     volumes:
-    - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
+    - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z  //機台實體路徑配對container路徑
     environment:
     - DB_USER=gitlab
     - DB_PASS=password
@@ -66,16 +66,16 @@ services:
 
   gitlab:
     restart: always
-    image: sameersbn/gitlab
-    depends_on:
-    - redis
+    image: sameersbn/gitlab  // 作者/作品(images)/版本
+    depends_on:              // 定義 service 之間的相依性
+    - redis           
     - postgresql
-    ports:
+    ports:                   //設定port
     - "10080:80"
     - "10022:22"
     volumes:
-    - /srv/docker/gitlab/gitlab:/home/git/data:Z
-    environment:
+    - /srv/docker/gitlab/gitlab:/home/git/data:Z  //機台實體路徑配對container路徑
+    environment:             //gitlab的設定
     - DEBUG=false
 
     - DB_ADAPTER=postgresql
