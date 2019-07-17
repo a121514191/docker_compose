@@ -24,9 +24,12 @@ Compose 適合用來開發、測試、與建立 staging 環境，如同 CI workf
 
 有很多安裝方法，我使用的是
 ```
-yum install python-pip python-dev
+yum install python-pip python-dev (X)
 
-pip install docker-compose
+pip install docker-compose (X)
+
+yum install docker-compose (O)
+
 ```
 其他安裝方法在下面連結
 
