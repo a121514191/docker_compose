@@ -28,7 +28,17 @@ yum install python-pip python-dev (X)
 
 pip install docker-compose (X)
 
-yum install docker-compose (O)
+yum install docker-compose (X) 2019/11/19 已經無法使用
+
+更新為下列方式
+
+參考:https://docs.docker.com/compose/install/
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+docker-compose -v
 
 ```
 其他安裝方法在下面連結
